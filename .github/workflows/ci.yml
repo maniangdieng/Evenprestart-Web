@@ -1,0 +1,32 @@
+# CI du front — à chaque push sur master (et chaque pull request).
+# Vercel déploie en parallèle via son intégration Git ; si le build casse,
+# Vercel garde en ligne la dernière version qui fonctionnait.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Next.js
+    runs-on: ubuntu-latest
+    env:
+      # Valeur factice : le build n'appelle pas l'API (pages dynamiques).
+      NEXT_PUBLIC_API_URL: https://api.example.com
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
