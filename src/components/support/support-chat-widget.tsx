@@ -65,8 +65,8 @@ export function SupportChatWidget({
       }`}
     >
       {open && (
-        <div className="flex h-[28rem] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col rounded-2xl border border-navy/10 bg-white p-4 shadow-2xl shadow-navy/20">
-          <div className="mb-2 flex items-center justify-between">
+        <div className="flex h-[30rem] max-h-[calc(100dvh-7rem)] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-navy/10 bg-white shadow-2xl shadow-navy/20">
+          <div className="flex flex-shrink-0 items-center justify-between px-4 py-3">
             <h3 className="font-display text-sm font-bold text-navy">Besoin d&apos;aide ?</h3>
             <button
               type="button"
@@ -77,7 +77,7 @@ export function SupportChatWidget({
               <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="flex-1 overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-hidden">
             {isAuthenticated ? (
               <SupportChatThread initialConversation={initialConversation} />
             ) : (

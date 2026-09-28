@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { ArtistSidebar } from "@/components/artist/artist-sidebar";
+import { ShellMain } from "@/components/layout/shell-main";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { logoutAction } from "@/lib/auth-actions";
 import type { NotificationDto } from "@/lib/api";
@@ -66,9 +67,7 @@ export function ArtistShell({
             upcomingCount={upcomingCount}
             supportUnreadCount={supportUnreadCount}
           />
-          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-8 pt-6 sm:px-6 sm:pt-8">
-            <div className="mx-auto w-full max-w-6xl">{children}</div>
-          </main>
+          <ShellMain fullBleedPaths={["/artiste/messages"]}>{children}</ShellMain>
         </div>
       ) : (
         <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">{children}</main>

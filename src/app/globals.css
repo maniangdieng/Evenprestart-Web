@@ -36,6 +36,9 @@ body {
 html,
 body {
   overflow-x: clip;
+  /* Supprime aussi le « rebond » élastique horizontal des navigateurs mobiles,
+     qui donnait l'impression que la page glissait alors que rien ne dépassait. */
+  overscroll-behavior-x: none;
 }
 
 ::-webkit-scrollbar {
