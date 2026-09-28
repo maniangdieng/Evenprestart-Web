@@ -40,10 +40,15 @@ export function LoginForm() {
     setLoading(true);
     setError(null);
     try {
-      const { role } = await loginAction(email, password);
-      window.location.href = getSafeRedirect(next, ROLE_REDIRECT[role] ?? "/");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Connexion impossible.");
+      const result = await loginAction(email, password);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      window.location.href = getSafeRedirect(next, ROLE_REDIRECT[result.data.role] ?? "/");
+    } catch {
+      // L'appel de l'action lui-même a échoué (réseau, déploiement en cours…).
+      setError("Connexion impossible pour le moment. Réessayez dans quelques instants.");
     } finally {
       setLoading(false);
     }

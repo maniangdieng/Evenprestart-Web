@@ -70,14 +70,18 @@ export function RegisterForm({ role, title, subtitle, defaultRedirect }: Registe
     try {
       const { firstName, lastName, email, password } = form;
       const result = await registerAction({ firstName, lastName, email, password, role });
-      if (result.status === "pending_verification") {
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      if (result.data.status === "pending_verification") {
         setStep("otp");
         startResendCooldown();
       } else {
         window.location.href = redirectTo;
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Inscription impossible.");
+    } catch {
+      setError("Inscription impossible pour le moment. Réessayez dans quelques instants.");
     } finally {
       setLoading(false);
     }
@@ -88,10 +92,14 @@ export function RegisterForm({ role, title, subtitle, defaultRedirect }: Registe
     setOtpLoading(true);
     setOtpError(null);
     try {
-      await verifyOtpAction(form.email, code);
+      const result = await verifyOtpAction(form.email, code);
+      if (!result.ok) {
+        setOtpError(result.error);
+        return;
+      }
       window.location.href = redirectTo;
-    } catch (err) {
-      setOtpError(err instanceof Error ? err.message : "Code invalide.");
+    } catch {
+      setOtpError("Vérification impossible pour le moment. Réessayez dans quelques instants.");
     } finally {
       setOtpLoading(false);
     }
@@ -100,11 +108,15 @@ export function RegisterForm({ role, title, subtitle, defaultRedirect }: Registe
   async function handleResend() {
     setResendMessage(null);
     try {
-      await resendOtpAction(form.email);
+      const result = await resendOtpAction(form.email);
+      if (!result.ok) {
+        setOtpError(result.error);
+        return;
+      }
       setResendMessage("Un nouveau code vous a été envoyé.");
       startResendCooldown();
-    } catch (err) {
-      setOtpError(err instanceof Error ? err.message : "Impossible de renvoyer le code.");
+    } catch {
+      setOtpError("Impossible de renvoyer le code pour le moment.");
     }
   }
 

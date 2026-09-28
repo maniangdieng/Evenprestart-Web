@@ -4,9 +4,30 @@ import type { TalentCardData } from "@/components/talents/talent-card";
 // réseau Docker interne (`API_INTERNAL_URL=http://api:3001`) — `localhost`
 // depuis le conteneur web ne pointe pas vers le conteneur api. Côté
 // navigateur, seul NEXT_PUBLIC_API_URL (exposé publiquement) est disponible.
-const SERVER_API_URL =
-  process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-const CLIENT_API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+// Tolère les saisies courantes dans l'hébergeur : « …/ » ou « …/api » en fin
+// d'URL donneraient sinon « //api » ou « /api/api ».
+function normalizeApiUrl(url: string) {
+  return url.trim().replace(/\/+$/, "").replace(/\/api$/, "");
+}
+
+const SERVER_API_URL = normalizeApiUrl(
+  process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001",
+);
+const CLIENT_API_URL = normalizeApiUrl(process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001");
+
+// En production (Vercel…), l'URL de l'API doit être fournie : sans elle le
+// serveur Next appellerait http://localhost:3001, qui n'existe pas là-bas.
+if (
+  typeof window === "undefined" &&
+  process.env.NODE_ENV === "production" &&
+  SERVER_API_URL.includes("localhost")
+) {
+  console.error(
+    "[api] NEXT_PUBLIC_API_URL n'est pas définie : l'API est appelée sur " +
+      `${SERVER_API_URL}. Renseignez l'URL publique de l'API (ex. https://mon-api.onrender.com) ` +
+      "dans les variables d'environnement de l'hébergeur, puis redéployez.",
+  );
+}
 
 function resolveApiUrl() {
   return typeof window === "undefined" ? SERVER_API_URL : CLIENT_API_URL;
@@ -20,20 +41,37 @@ export async function apiFetch<T>(
   path: string,
   { accessToken, headers, ...init }: ApiOptions = {},
 ): Promise<T> {
-  const response = await fetch(`${resolveApiUrl()}/api${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      ...headers,
-    },
-  });
+  const url = `${resolveApiUrl()}/api${path}`;
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        ...headers,
+      },
+    });
+  } catch (error) {
+    // API éteinte, en veille (Render gratuit) ou mauvaise URL.
+    console.error(`[api] ${url} injoignable :`, error);
+    throw new Error("Le serveur est momentanément injoignable. Réessayez dans quelques instants.");
+  }
 
   const text = await response.text();
-  const body = text ? JSON.parse(text) : null;
+  let body: { message?: string | string[] } | null = null;
+  try {
+    body = text ? JSON.parse(text) : null;
+  } catch {
+    // Réponse non JSON : on interroge probablement autre chose que l'API.
+    console.error(`[api] réponse non JSON (${response.status}) de ${url} : ${text.slice(0, 200)}`);
+    if (response.ok) throw new Error("Réponse inattendue du serveur.");
+  }
 
   if (!response.ok) {
-    throw new Error(body?.message ?? `Erreur API (${response.status})`);
+    const message = Array.isArray(body?.message) ? body.message.join(" ") : body?.message;
+    throw new Error(message ?? `Erreur du serveur (${response.status}).`);
   }
 
   return body as T;
