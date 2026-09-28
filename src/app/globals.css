@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/*
+ * Direction visuelle "Scène & Terre" (Claude Design), rééquilibrée à la
+ * demande de l'agence : fond clair/blanc dominant, le bleu nuit et le lime
+ * de la marque passent en accents (nav, boutons, badges) plutôt qu'en fond.
+ */
+@theme {
+  --color-navy: #0b1022;
+  --color-navy-light: #131a30;
+  --color-lime: #c7e23f;
+  --color-lime-dark: #7c9a1f;
+  --color-terracotta: #e08a4c;
+  --color-gold: #e6b54a;
+  --color-cream: #faf9f5;
+  --color-cream-deep: #f2f0e8;
+  --color-ink: #14171f;
+  --color-muted: #667085;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+}
+
+@theme inline {
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-cream-deep);
+  border-radius: 8px;
+}
