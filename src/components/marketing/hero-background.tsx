@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 
 export function HeroBackground({
   videoSrc,
@@ -6,18 +9,34 @@ export function HeroBackground({
   videoSrc?: string;
   posterSrc?: string;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Sur mobile, l'attribut autoplay seul ne suffit pas toujours (navigateurs
+  // intégrés, économiseur de données…) : on force `muted` puis on relance la
+  // lecture après l'hydratation. Si elle est refusée (mode économie d'énergie),
+  // la vidéo reste figée sur sa première image grâce au fragment `#t=0.1`.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    video.play().catch(() => {});
+  }, []);
+
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden bg-navy">
       {videoSrc ? (
         <video
-          className="h-full w-full object-cover opacity-70"
+          ref={videoRef}
+          className="h-full w-full object-cover opacity-90 md:opacity-70"
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
           poster={posterSrc}
+          aria-hidden
         >
-          <source src={videoSrc} type="video/mp4" />
+          <source src={`${videoSrc}#t=0.1`} type="video/mp4" />
         </video>
       ) : (
         <div
@@ -38,7 +57,9 @@ export function HeroBackground({
         aria-hidden
         className="absolute -right-24 top-10 h-80 w-80 rounded-full bg-terracotta/20 blur-[110px]"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/85 to-navy/50" />
+      {/* Voile plus léger sur mobile : le hero y est haut et étroit, un voile
+          aussi opaque que sur ordinateur masquait presque toute la vidéo. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/55 to-navy/35 md:from-navy md:via-navy/85 md:to-navy/50" />
     </div>
   );
 }

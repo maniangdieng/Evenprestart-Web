@@ -64,15 +64,26 @@ export async function Navbar() {
             </>
           ) : (
             <>
-              <Link href="/connexion" className="font-medium text-navy/70 hover:text-navy">
+              <Link href="/connexion" className="whitespace-nowrap font-medium text-navy/70 hover:text-navy">
                 Connexion
               </Link>
-              <ButtonLink href="/inscription-artiste" variant="outline" className="hidden sm:inline-flex">
-                Devenir artiste
-              </ButtonLink>
+              {/* La visibilité est portée par un conteneur : sur le bouton lui-même,
+                  `hidden` entrait en conflit avec son `inline-flex` de base et le
+                  bouton restait affiché sur mobile, où il chevauchait « Connexion ». */}
+              <span className="hidden sm:inline-flex">
+                <ButtonLink href="/inscription-artiste" variant="outline">
+                  Devenir artiste
+                </ButtonLink>
+              </span>
             </>
           )}
-          <MobileNav links={[...NAV_LINKS, ...(space ? [space] : [])]} />
+          <MobileNav
+            links={[
+              ...NAV_LINKS,
+              ...(space ? [space] : []),
+              ...(session ? [] : [{ href: "/inscription-artiste", label: "Devenir artiste" }]),
+            ]}
+          />
         </div>
       </div>
     </header>

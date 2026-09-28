@@ -30,10 +30,11 @@ export default async function RootLayout({
 }>) {
   const session = await getSession();
   const role = session?.user.role;
-  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
-  // Support ouvert aux clients et artistes ; les visiteurs voient l'icône mais
-  // sont invités à se connecter. Les admins répondent depuis leur messagerie.
-  const canChat = role === "CLIENT" || role === "ARTIST";
+  // Bulle de support réservée au site public : visiteurs (invités à se
+  // connecter) et clients. Les artistes ont la page Support de leur espace,
+  // les admins répondent depuis leur messagerie.
+  const showSupportWidget = !role || role === "CLIENT";
+  const canChat = role === "CLIENT";
   const supportConversation =
     canChat && session ? await getMySupportConversation(session.accessToken).catch(() => null) : null;
 
@@ -44,7 +45,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-cream text-ink font-sans">
         {children}
-        {!isAdmin && (
+        {showSupportWidget && (
           <SupportChatWidget
             initialConversation={supportConversation}
             isAuthenticated={canChat}
