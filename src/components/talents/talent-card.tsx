@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star, CircleCheck } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { CircleCheck } from "lucide-react";
 import { getInitials } from "@/lib/initials";
 
 export interface TalentCardData {
@@ -53,23 +52,11 @@ export function TalentCard({ talent }: { talent: TalentCardData }) {
           </span>
         )}
       </div>
-      <div className="space-y-2 p-4">
+      <div className="space-y-1 p-4">
         <div className="font-display text-base font-bold text-navy">
           {talent.stageName}
         </div>
-        <div className="text-xs text-muted">
-          {talent.categoryLabel}
-          {talent.location ? ` · ${talent.location}` : ""}
-        </div>
-        <div className="flex items-center justify-between pt-1">
-          <Badge tone="gold">
-            <Star className="h-3 w-3 fill-current" /> {talent.ratingAverage.toFixed(1)}{" "}
-            <span className="opacity-70">({talent.ratingCount})</span>
-          </Badge>
-          <span className="font-display text-sm font-bold text-navy">
-            {talent.priceFrom.toLocaleString("fr-FR")} F
-          </span>
-        </div>
+        <div className="text-sm text-muted">{talent.categoryLabel}</div>
       </div>
     </Link>
   );

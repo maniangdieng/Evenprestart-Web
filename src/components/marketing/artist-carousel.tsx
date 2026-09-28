@@ -80,11 +80,6 @@ export function ArtistCarousel({ talents }: { talents: TalentCardData[] }) {
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-navy/95 via-navy/10 to-transparent p-4 text-left">
               <div className="font-display text-lg font-bold text-white">{talent.stageName}</div>
               <div className="text-sm text-white/70">{talent.categoryLabel}</div>
-              {isFront && (
-                <div className="mt-1.5 font-display text-sm font-bold text-lime">
-                  {talent.priceFrom.toLocaleString("fr-FR")} F
-                </div>
-              )}
             </div>
           </Link>
         );

@@ -30,6 +30,14 @@ body {
   color: var(--color-ink);
 }
 
+/* Empêche la page de glisser de gauche à droite sur mobile quand un élément
+   décoratif (halos flous, cartes inclinées du carrousel…) dépasse de l'écran.
+   `clip` plutôt que `hidden` : `hidden` casserait les en-têtes `sticky`. */
+html,
+body {
+  overflow-x: clip;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
