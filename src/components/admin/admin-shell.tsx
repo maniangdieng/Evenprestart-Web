@@ -23,7 +23,7 @@ export function AdminShell({
   initialUnreadCount,
 }: AdminShellProps) {
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-cream-deep">
+    <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-cream-deep">
       <header className="z-40 flex-shrink-0 border-b border-navy/10 bg-navy shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
@@ -58,12 +58,12 @@ export function AdminShell({
         </div>
       </header>
 
-      <div className="flex min-h-0 w-full flex-1">
+      <div className="flex min-h-0 w-full flex-1 flex-col md:flex-row">
         <AdminSidebar
           pendingProfilesCount={pendingProfilesCount}
           messagesUnreadCount={messagesUnreadCount}
         />
-        <main className="min-w-0 flex-1 overflow-y-auto px-4 pb-24 pt-6 sm:px-6 sm:pt-8 md:pb-8">
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-8 pt-6 sm:px-6 sm:pt-8">
             <div className="mx-auto w-full max-w-6xl">{children}</div>
           </main>
       </div>

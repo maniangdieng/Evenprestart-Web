@@ -40,7 +40,7 @@ export function ArtistSidebar({
     { href: "/artiste/avis", label: "Avis", icon: Star },
     {
       href: "/artiste/messages",
-      label: "Event Prest'Art",
+      label: "Messagerie",
       icon: Headset,
       count: supportUnreadCount > 0 ? supportUnreadCount : undefined,
     },
@@ -86,7 +86,9 @@ export function ArtistSidebar({
       </nav>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-navy/10 bg-white/95 backdrop-blur md:hidden">
+      {/* Barre du bas : élément de la mise en page (pas `fixed`), placée en dernier
+          via `order-last` — la zone de contenu s'arrête juste au-dessus. */}
+      <nav className="order-last z-40 flex flex-shrink-0 border-t border-navy/10 bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
         {items.map((item) => {
           const active = isActive(item.href);
           const Icon = item.icon;
@@ -94,7 +96,7 @@ export function ArtistSidebar({
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-semibold transition-colors ${
+              className={`relative flex min-w-0 flex-1 flex-col items-center gap-0.5 px-0.5 py-2.5 text-[10px] font-semibold transition-colors ${
                 active ? "text-navy" : "text-navy/40"
               }`}
             >
@@ -106,7 +108,9 @@ export function ArtistSidebar({
                   </span>
                 )}
               </span>
-              {item.label === "Vue d'ensemble" ? "Accueil" : item.label}
+              <span className="max-w-full truncate">
+                {item.label === "Vue d'ensemble" ? "Accueil" : item.label}
+              </span>
             </Link>
           );
         })}

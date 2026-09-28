@@ -59,11 +59,13 @@ export default async function ContactPage({
                   <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-lime/15 text-lime-dark">
                     <detail.icon className="h-5 w-5" />
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[11px] font-bold uppercase tracking-wide text-muted">
                       {detail.label}
                     </div>
-                    <div className="mt-0.5 font-display font-semibold text-navy">{detail.value}</div>
+                    <div className="mt-0.5 font-display font-semibold text-navy [overflow-wrap:anywhere]">
+                      {detail.value}
+                    </div>
                     <div className="text-xs text-muted">{detail.hint}</div>
                   </div>
                 </Reveal>
