@@ -12,13 +12,11 @@ export default async function AdminMessageriePage({
     typeof params.conversation === "string" ? params.conversation : undefined;
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <h1 className="mb-4 font-display text-xl font-bold text-navy">Messagerie</h1>
-      <AdminMessagerie
-        key={initialSelectedId}
-        initialConversations={conversations}
-        initialSelectedId={initialSelectedId}
-      />
-    </div>
+    // Page « plein écran » (cf. ShellMain) : liste + fil façon messagerie mobile.
+    <AdminMessagerie
+      key={initialSelectedId}
+      initialConversations={conversations}
+      initialSelectedId={initialSelectedId}
+    />
   );
 }

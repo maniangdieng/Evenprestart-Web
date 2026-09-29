@@ -1,6 +1,7 @@
 import { LogOut, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { ShellMain } from "@/components/layout/shell-main";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { logoutAction } from "@/lib/auth-actions";
 import type { NotificationDto } from "@/lib/api";
@@ -63,9 +64,7 @@ export function AdminShell({
           pendingProfilesCount={pendingProfilesCount}
           messagesUnreadCount={messagesUnreadCount}
         />
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-8 pt-6 sm:px-6 sm:pt-8">
-            <div className="mx-auto w-full max-w-6xl">{children}</div>
-          </main>
+        <ShellMain fullBleedPaths={["/admin/messagerie"]}>{children}</ShellMain>
       </div>
     </div>
   );
