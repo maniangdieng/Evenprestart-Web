@@ -11,6 +11,7 @@ import { loginAction } from "@/lib/auth-actions";
 import { getSafeRedirect } from "@/lib/safe-redirect";
 
 const ROLE_REDIRECT: Record<string, string> = {
+  CLIENT: "/client",
   ARTIST: "/artiste",
   ADMIN: "/admin",
   SUPER_ADMIN: "/admin",

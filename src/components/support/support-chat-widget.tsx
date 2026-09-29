@@ -57,6 +57,8 @@ export function SupportChatWidget({
 
   // Inutile (et gênant) sur les pages de connexion / inscription.
   if (AUTH_PAGES.some((p) => pathname.startsWith(p))) return null;
+  // L'espace client a sa propre page Messagerie (même fil de discussion).
+  if (pathname.startsWith("/client")) return null;
 
   return (
     <div

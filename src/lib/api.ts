@@ -355,6 +355,111 @@ export function getMyBookings(
   });
 }
 
+// ============ ESPACE CLIENT ============
+
+/** Réservation vue par le client : total payé, visuel de l'artiste, avis éventuel. */
+export interface ClientBookingDto extends BookingDto {
+  totalAmount: string;
+  cancellationReason: string | null;
+  talentProfile: {
+    id: string;
+    stageName: string;
+    coverImageUrl: string | null;
+    location: string | null;
+  };
+  review: { id: string; rating: number } | null;
+}
+
+export function getMyClientBookings(accessToken: string): Promise<ClientBookingDto[]> {
+  return apiFetch<ClientBookingDto[]>("/bookings/mine?as=client", {
+    accessToken,
+    cache: "no-store",
+  });
+}
+
+export function cancelMyBooking(
+  accessToken: string,
+  bookingId: string,
+  reason?: string,
+): Promise<BookingDto> {
+  return apiFetch<BookingDto>(`/bookings/${bookingId}/cancel`, {
+    method: "PATCH",
+    accessToken,
+    body: JSON.stringify({ reason }),
+  });
+}
+
+export function createReview(
+  accessToken: string,
+  dto: { bookingId: string; rating: number; comment?: string },
+): Promise<ReviewDto> {
+  return apiFetch<ReviewDto>("/reviews", {
+    method: "POST",
+    accessToken,
+    body: JSON.stringify(dto),
+  });
+}
+
+export interface UserProfileDto {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  avatarUrl: string | null;
+  role: "CLIENT" | "ARTIST" | "ADMIN" | "SUPER_ADMIN";
+  authProvider: "LOCAL" | "GOOGLE" | "FACEBOOK";
+  createdAt: string;
+}
+
+export function getMe(accessToken: string): Promise<UserProfileDto> {
+  return apiFetch<UserProfileDto>("/users/me", { accessToken, cache: "no-store" });
+}
+
+export function updateMe(
+  accessToken: string,
+  dto: { firstName?: string; lastName?: string; phone?: string },
+): Promise<UserProfileDto> {
+  return apiFetch<UserProfileDto>("/users/me", {
+    method: "PATCH",
+    accessToken,
+    body: JSON.stringify(dto),
+  });
+}
+
+export function changeMyPassword(
+  accessToken: string,
+  dto: { currentPassword: string; newPassword: string },
+): Promise<{ success: true }> {
+  return apiFetch<{ success: true }>("/users/me/password", {
+    method: "PATCH",
+    accessToken,
+    body: JSON.stringify(dto),
+  });
+}
+
+export function getMyFavorites(accessToken: string): Promise<TalentProfileDto[]> {
+  return apiFetch<TalentProfileDto[]>("/users/me/favorites", {
+    accessToken,
+    cache: "no-store",
+  });
+}
+
+export function getMyFavoriteIds(accessToken: string): Promise<string[]> {
+  return apiFetch<string[]>("/users/me/favorites/ids", { accessToken, cache: "no-store" });
+}
+
+export function setFavorite(
+  accessToken: string,
+  talentProfileId: string,
+  favorite: boolean,
+): Promise<{ favorite: boolean }> {
+  return apiFetch<{ favorite: boolean }>(`/users/me/favorites/${talentProfileId}`, {
+    method: favorite ? "POST" : "DELETE",
+    accessToken,
+  });
+}
+
 export interface CreateBookingInput {
   talentProfileId: string;
   servicePackageId?: string;

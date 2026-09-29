@@ -12,6 +12,7 @@ const NAV_LINKS = [
 ];
 
 const SPACE_BY_ROLE: Record<string, { href: string; label: string }> = {
+  CLIENT: { href: "/client", label: "Mon espace" },
   ARTIST: { href: "/artiste", label: "Espace Artiste" },
   ADMIN: { href: "/admin", label: "Back-Office" },
   SUPER_ADMIN: { href: "/admin", label: "Back-Office" },

@@ -7,6 +7,7 @@ import type { SessionUser } from "@/lib/session";
 import { setSessionCookies, type TokenPair } from "@/lib/session-cookies";
 
 const ROLE_REDIRECT: Record<string, string> = {
+  CLIENT: "/client",
   ARTIST: "/artiste",
   ADMIN: "/admin",
   SUPER_ADMIN: "/admin",

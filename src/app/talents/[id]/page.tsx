@@ -9,7 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PublicMediaGallery } from "@/components/talent/public-media-gallery";
 import { BookingPanel } from "@/components/talent/booking-panel";
-import { getTalent, getTalentReviews } from "@/lib/api";
+import { getMyFavoriteIds, getTalent, getTalentReviews } from "@/lib/api";
+import { getSession } from "@/lib/session";
+import { FavoriteButton } from "@/components/client/favorite-button";
 
 export default async function TalentDetailPage({
   params,
@@ -22,7 +24,16 @@ export default async function TalentDetailPage({
     notFound();
   }
 
-  const reviews = await getTalentReviews(id).catch(() => []);
+  const [reviews, session] = await Promise.all([
+    getTalentReviews(id).catch(() => []),
+    getSession(),
+  ]);
+  // Favoris : réservés aux clients connectés.
+  const isClient = session?.user.role === "CLIENT";
+  const isFavorite =
+    isClient && session
+      ? (await getMyFavoriteIds(session.accessToken).catch(() => [] as string[])).includes(id)
+      : false;
   const categoryLabel = talent.categories[0]?.category.name ?? "Talent";
   const ratingAverage = Number(talent.ratingAverage);
   const featuredPackage =
@@ -194,6 +205,7 @@ export default async function TalentDetailPage({
                 >
                   <Headset className="h-4 w-4" /> Une question ? Contactez Event Prest&apos;Art
                 </Link>
+                {isClient && <FavoriteButton talentProfileId={id} initialFavorite={isFavorite} />}
                 <p className="mt-3 text-center text-[11px] text-muted">
                   Paiement sécurisé Wave · Orange Money · Stripe
                 </p>
